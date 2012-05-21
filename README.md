@@ -8,14 +8,18 @@ This is currently experimental, but works in general unless there is an issue wi
 Install
 -------
 cd into the thinkdisp folder and run the install script with
+
     sudo ./install
+
 This will copy all the necessary scripts to /usr/bin/
 You must already have screenclone in /usr/bin/
 
 Usage
 -----
 Run
+
     sudo thinkdisp.py
+
 You'll see an icon in the unity panel that controls everything
 
 
