@@ -14,6 +14,7 @@ You must already have screenclone in /usr/bin/
 
 Usage
 -----
+Run
     sudo thinkdisp.py
 You'll see an icon in the unity panel that controls everything
 
