@@ -1,0 +1,23 @@
+#!/bin/bash
+# run this when you want to disconnect an external monitor
+# kills the nvidia X server, screenclone, and cleans up everything
+
+echo turning off display...
+xrandr --output VIRTUAL --off
+
+echo killing screenclone...
+pkill screenclone
+
+
+echo killing X server...
+echo Running X servers are
+pgrep X
+if [ $(pgrep -c X) -gt 1 ]; then
+    echo killing $(pgrep -n X)
+
+    sudo kill $(pgrep -n X)
+    sleep 1
+    killnvidia
+else
+    echo 1 or fewer X servers were found - not killing anything.
+fi
