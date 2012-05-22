@@ -18,7 +18,9 @@ Usage
 -----
 Run
 
-    sudo thinkdisp.py
+    thinkdisp.py
+OR
+    ./thinkdisp.py
 
 You'll see an icon in the unity panel that controls everything
 
