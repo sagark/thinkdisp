@@ -6,8 +6,12 @@ import appindicator
 import subprocess
 import time
 
+#currently set resolution
 RESOLUTION = "1440x900"
+#the side on which your external monitor is, relative to the thinkpad display
 SIDE = "right"
+#available resolutions, set to standard xrandr resolutions by default
+AVAIL_RES = ["1920x1200", "1920x1080", "1600x1200", "1680x1050", "1400x1050", "1440x900", "1280x960", "1360x768", "1152x864", "800x600", "640x480"]
 
 """Future Features:
 	switching out the xorg.conf.nvidia so that optirun can actually be used properly
@@ -52,6 +56,16 @@ class ThinkDisp:
         self.cardoff_item.show()
         self.menu.append(self.cardoff_item)
 
+        self.prefs_item = gtk.MenuItem("Set Display Preferences")
+        self.prefs_item.connect("activate", self.prefs)
+        self.prefs_item.show()
+        self.menu.append(self.prefs_item)
+
+        self.about_item = gtk.MenuItem("About ThinkDisp")
+        self.about_item.connect("activate", self.about_popup)
+        self.about_item.show()
+        self.menu.append(self.about_item)
+        
         self.quit_item = gtk.MenuItem("Quit Indicator")
         self.quit_item.connect("activate", self.quit)
         self.quit_item.show()
@@ -80,6 +94,8 @@ class ThinkDisp:
         p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], stdin=subprocess.PIPE)
         p.communicate(input="OFF")
 
+    def prefs(self, widget):
+        self.prefs_popup()
 
     def popup_test(self, message_text, dialog_title):
         label = gtk.Label(message_text)
@@ -93,8 +109,71 @@ class ThinkDisp:
         #checkbox = gtk.CheckButton("Useless checkbox")
         #dialog.action_area.pack_end(checkbox)
         #checkbox.show()
+        #combobox = gtk.ComboBox()
+        #combobox.insert_text(0, "LOLZ")
+        #combobox.set_active(0)
         response = dialog.run()
         dialog.destroy()
+
+    def prefs_popup(self):
+        global RESOLUTION
+        global SIDE
+        label = gtk.Label("Set Preferences:                                                        ")
+        dialog = gtk.Dialog("Display Preferences",
+                    None,
+                    gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        dialog.vbox.pack_start(label)
+        label.show()
+        label2 = gtk.Label("External Monitor Resolution")
+        dialog.vbox.pack_start(label2)
+        label2.show()
+        combo = gtk.combo_box_new_text()
+        for res in AVAIL_RES:
+            combo.append_text(res)
+        try:
+            combo.set_active(AVAIL_RES.index(RESOLUTION))
+        except: # in case of value_error
+            combo.set_active(0)
+        #dialog.action_area.pack_end(combo)
+        dialog.vbox.pack_start(combo)
+        combo.show()
+        label3 = gtk.Label("My external monitor is to the ________ of the thinkpad display")
+        dialog.vbox.pack_start(label3)
+        label3.show()
+        sidecombo = gtk.combo_box_new_text()
+        sidecombo.append_text("left")
+        sidecombo.append_text("right")
+        if SIDE=="left":
+            sidecombo.set_active(0)
+        else:
+            sidecombo.set_active(1)
+        dialog.vbox.pack_start(sidecombo)
+        sidecombo.show()
+        response = dialog.run()
+        comboresp = combo.get_active_text()
+        sidecomboresp = sidecombo.get_active_text()
+        RESOLUTION = comboresp
+        SIDE = sidecomboresp
+        dialog.destroy()
+        print("External Monitor Resolution set to: " + RESOLUTION)
+        print("External Monitor is to the " + SIDE + " of the thinkpad display")
+    
+    def about_popup(self, widget):
+        self.about()
+
+
+    def about(self):
+        label = gtk.Label("Developed by Sagar Karandikar \n http://sagark.org \n http://github.com/sagark/thinkdisp")
+        dialog = gtk.Dialog("About ThinkDisp:",
+                    None,
+                    gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        dialog.vbox.pack_start(label)
+        label.show()
+        response = dialog.run()
+        dialog.destroy()
+
     
     #runs the commands to start the display using RESOLUTION and SIDE
     def start_disp(self, widget):
