@@ -187,8 +187,8 @@ class ThinkDisp:
         subprocess.Popen(["screenclone", "-d", ":8", "-x", "1"])
 
     def kill_disp(self, widget):
-        subprocess.call(["thinkdispk1"])
-        subprocess.call(["thinkdispk2"])
+        subprocess.call(["killdisp1"])
+        subprocess.call(["killdisp2"])
 
     def load_defaults(self):
         global SETTINGS
@@ -196,6 +196,10 @@ class ThinkDisp:
         prefs_file.readline()
         defaults = eval(prefs_file.readline())
         SETTINGS = defaults
+
+#    def save_defaults(self):
+        
+
 
 if __name__ == "__main__":
 	#ensures that bbswitch dkms module is inserted and usable
