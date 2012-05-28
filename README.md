@@ -27,4 +27,4 @@ You'll see an icon in the unity panel that controls everything
 
 Credits
 -------
-The two kill scripts thinkdispk1 and thinkdispk2 are adapted from http://zachstechnotes.blogspot.com/2012/04/post-title.html
+The two kill scripts killdisp1 and killdisp2 are adapted from http://zachstechnotes.blogspot.com/2012/04/post-title.html
