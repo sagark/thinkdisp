@@ -5,6 +5,8 @@ import appindicator
 
 import subprocess
 import time
+import thread
+import os
 
 #available resolutions, set to standard xrandr resolutions by default
 AVAIL_RES = ["1920x1200", "1920x1080", "1600x1200", "1680x1050", "1400x1050", "1440x900", "1280x960", "1360x768", "1152x864", "800x600", "640x480"]
@@ -192,13 +194,40 @@ class ThinkDisp:
 
     def load_defaults(self):
         global SETTINGS
-        prefs_file = file("prefs.ini")
+        beg_path = os.path.expanduser("~")
+        prefs_file = file(beg_path + "/Documents/thinkdisp/prefs.ini")
         prefs_file.readline()
         defaults = eval(prefs_file.readline())
         SETTINGS = defaults
 
 #    def save_defaults(self):
-        
+
+
+def switch_batt():
+    counter = 0
+    while True:
+        counter += 1
+        print(counter)
+        print("switch")
+        a = file("/proc/acpi/battery/BAT0/state")
+        a.readline()
+        a.readline()
+        battstat = a.readline()
+        if "charging" in battstat:
+            print("not switching")
+            #pass
+        else:
+            print("switching")
+            ThinkDisp.kill_disp(0, 1)
+        time.sleep(5)
+
+"""def switch_batt_runner():
+    counter = 0
+    while True:
+        counter+= 1
+        print(counter)
+        switch_batt()
+        time.sleep(5)"""
 
 
 if __name__ == "__main__":
@@ -206,5 +235,6 @@ if __name__ == "__main__":
     print("the thinkdisp icon should now be in your top panel")
     print("there are currently some bugs - for example if thinkdisp crashes \n so does the xserver running the second monitor")
     subprocess.call(["sudo", "modprobe", "bbswitch"])
+    #thread.start_new_thread(switch_batt, ())
     indicator = ThinkDisp()
     indicator.main()
