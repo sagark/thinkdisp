@@ -3,7 +3,7 @@
 
 echo "Removing nvidia module..."
 sudo rmmod nvidia
-sudo rmmod nouveau
+#gksudo rmmod nouveau
 sleep 1s
 
 

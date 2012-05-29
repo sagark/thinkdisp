@@ -184,13 +184,16 @@ class ThinkDisp:
     #runs the commands to start the display using RESOLUTION and SIDE
     def start_disp(self, widget):
         subprocess.Popen(["optirun", "true"])
+        time.sleep(1)
         subprocess.Popen(["xrandr", "--output", "LVDS1", "--auto", "--output", "VIRTUAL", "--mode", str(SETTINGS["RESOLUTION"]), "--"+str(SETTINGS["SIDE"])+"-of", "LVDS1"])
 		#YOU MUST HAVE screenclone in /usr/bin/
+        time.sleep(1)
         subprocess.Popen(["screenclone", "-d", ":8", "-x", "1"])
 
     def kill_disp(self, widget):
-        subprocess.call(["killdisp1"])
-        subprocess.call(["killdisp2"])
+        subprocess.call(["gksudo", "killdisp1"])
+        #time.sleep(3)
+        #subprocess.call(["gksudo", "killdisp2"])
 
     def load_defaults(self):
         global SETTINGS
@@ -232,9 +235,10 @@ def switch_batt():
 
 if __name__ == "__main__":
 	#ensures that bbswitch dkms module is inserted and usable
+    time.sleep(5) #prevents the weird gksudo lockup
     print("the thinkdisp icon should now be in your top panel")
     print("there are currently some bugs - for example if thinkdisp crashes \n so does the xserver running the second monitor")
-    subprocess.call(["sudo", "modprobe", "bbswitch"])
+    subprocess.call(["gksudo", "modprobe", "bbswitch"])
     #thread.start_new_thread(switch_batt, ())
     indicator = ThinkDisp()
     indicator.main()

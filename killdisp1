@@ -16,8 +16,8 @@ if [ $(pgrep -c X) -gt 1 ]; then
     echo killing $(pgrep -n X)
 
     sudo kill $(pgrep -n X)
-    sleep 1
-    killnvidia
+    sleep 3
+    sudo killdisp2
 else
     echo 1 or fewer X servers were found - not killing anything.
 fi
