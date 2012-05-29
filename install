@@ -6,6 +6,7 @@ sudo cp killdisp1 /usr/bin/killdisp1
 sudo cp killdisp2 /usr/bin/killdisp2
 mkdir -p ~/Documents/thinkdisp
 sudo cp prefs.ini ~/Documents/thinkdisp/prefs.ini
+mkdir -p ~/.config/autostart
 sudo cp thinkdisp.desktop ~/.config/autostart/thinkdisp.desktop
 sudo chmod +x /usr/bin/thinkdisp.py
 sudo chmod +x /usr/bin/killdisp1
