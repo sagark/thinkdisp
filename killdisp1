@@ -20,4 +20,5 @@ if [ $(pgrep -c X) -gt 1 ]; then
     sudo killdisp2
 else
     echo 1 or fewer X servers were found - not killing anything.
+    sudo killdisp2
 fi
