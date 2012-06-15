@@ -85,18 +85,22 @@ class ThinkDisp:
         a = subprocess.check_output(["cat", "/proc/acpi/bbswitch"])
         if "ON" in a:
             print("card is on")
-            self.popup_test("The Card is On", "Card Status")
+            #self.popup_test("The Card is On", "Card Status")
+            subprocess.call(["notify-send", 'thinkdisp', 'The Nvidia card is on'])
         elif "OFF" in a:
             print("card is off")
-            self.popup_test("The Card is Off", "Card Status")
+            #self.popup_test("The Card is Off", "Card Status")
+            subprocess.call(["notify-send", 'thinkdisp', 'The Nvidia card is off'])
 
     def card_on(self, widget):
         p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], stdin=subprocess.PIPE)
         p.communicate(input="ON")
+        self.status_check(0)
 
     def card_off(self, widget):	
         p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], stdin=subprocess.PIPE)
         p.communicate(input="OFF")
+        self.status_check(0)
 
     def prefs(self, widget):
         self.prefs_popup()
@@ -189,9 +193,11 @@ class ThinkDisp:
 		#YOU MUST HAVE screenclone in /usr/bin/
         time.sleep(1)
         subprocess.Popen(["screenclone", "-d", ":8", "-x", "1"])
+        self.status_check(0)
 
     def kill_disp(self, widget):
         subprocess.call(["gksudo", "killdisp1"])
+        self.status_check(0)
         #time.sleep(3)
         #subprocess.call(["gksudo", "killdisp2"])
 
@@ -238,7 +244,8 @@ if __name__ == "__main__":
     time.sleep(5) #prevents the weird gksudo lockup
     print("the thinkdisp icon should now be in your top panel")
     print("there are currently some bugs - for example if thinkdisp crashes \n so does the xserver running the second monitor")
-    subprocess.call(["gksudo", "modprobe", "bbswitch"])
+    #subprocess.call(["gksudo", "modprobe", "bbswitch"])
+    subprocess.call(["gksudo", "start_thinkdisp"])
     #thread.start_new_thread(switch_batt, ())
     indicator = ThinkDisp()
     indicator.main()

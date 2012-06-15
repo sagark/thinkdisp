@@ -1,0 +1,5 @@
+#!/bin/bash
+#ensures that bbswitch module is enabled
+sudo modprobe bbswitch
+#kills display on startup
+sudo killdisp1
