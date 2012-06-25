@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import custom_res
+from util import UserConfig
 import sys
 import gtk
 import appindicator
@@ -9,24 +11,26 @@ import thread
 import os
 
 #available resolutions, set to standard xrandr resolutions by default
-AVAIL_RES = ["1920x1200", "1920x1080", "1600x1200", "1680x1050", "1400x1050", "1440x900", "1280x960", "1360x768", "1152x864", "800x600", "640x480"]
+AVAIL_RES = ["1920x1200", "1920x1080", "1600x1200", "1680x1050", "1400x1050", 
+          "1440x900", "1280x960", "1360x768", "1152x864", "800x600", "640x480"]
 
-#SETTINGS are loaded at runtime from prefs.ini, currently two: RESOLUTION and SIDE
+#SETTINGS are loaded at runtime from prefs.ini, currently: RESOLUTION and SIDE
 #RESOLUTION: currently set resolution for the external monitor
-#SIDE: the side on which your external monitor is, relative to the thinkpad display
+#SIDE: the side on which your external monitor is, relative to the thinkpad
 SETTINGS = { }
 
 """Future Features:
-	switching out the xorg.conf.nvidia so that optirun can actually be used properly
+switching out the xorg.conf.nvidia so that optirun can actually be used properly
 """
 
 class ThinkDisp:
     def __init__(self):
         self.ind = appindicator.Indicator("think-disp-indicator",
                                            "indicator-think",
-                                           appindicator.CATEGORY_APPLICATION_STATUS)
+                                      appindicator.CATEGORY_APPLICATION_STATUS)
         self.ind.set_status(appindicator.STATUS_ACTIVE)
-        self.ind.set_icon("gsd-xrandr") #this is located in /usr/share/icons/ubuntu-mono-light/apps/24/
+        self.ind.set_icon("gsd-xrandr") 
+        #^this is located in /usr/share/icons/ubuntu-mono-light/apps/24/
 
         self.menu_setup()
         self.ind.set_menu(self.menu)
@@ -86,19 +90,23 @@ class ThinkDisp:
         if "ON" in a:
             print("card is on")
             #self.popup_test("The Card is On", "Card Status")
-            subprocess.call(["notify-send", 'thinkdisp', 'The Nvidia card is on'])
+            subprocess.call(["notify-send", 'thinkdisp', 
+                                                      'The Nvidia card is on'])
         elif "OFF" in a:
             print("card is off")
             #self.popup_test("The Card is Off", "Card Status")
-            subprocess.call(["notify-send", 'thinkdisp', 'The Nvidia card is off'])
+            subprocess.call(["notify-send", 'thinkdisp', 
+                                                     'The Nvidia card is off'])
 
     def card_on(self, widget):
-        p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], stdin=subprocess.PIPE)
+        p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], 
+                                                         stdin=subprocess.PIPE)
         p.communicate(input="ON")
         self.status_check(0)
 
     def card_off(self, widget):	
-        p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], stdin=subprocess.PIPE)
+        p = subprocess.Popen(["sudo", "tee", "/proc/acpi/bbswitch"], 
+                                                         stdin=subprocess.PIPE)
         p.communicate(input="OFF")
         self.status_check(0)
 
@@ -119,7 +127,8 @@ class ThinkDisp:
 
     def prefs_popup(self):
         global SETTINGS
-        label = gtk.Label("Set Preferences:                                                        ")
+        label = gtk.Label("Set Preferences:                                   "
+                                                        "                     ")
         dialog = gtk.Dialog("Display Preferences",
                     None,
                     gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -142,7 +151,8 @@ class ThinkDisp:
         dialog.vbox.pack_start(combo)
         combo.show()
 
-        label3 = gtk.Label("My external monitor is to the ________ of the thinkpad display")
+        label3 = gtk.Label("My external monitor is to the ________ "
+                                                    "of the thinkpad display")
         dialog.vbox.pack_start(label3)
         label3.show()
 
@@ -167,14 +177,16 @@ class ThinkDisp:
 
         #terminal output
         print("External Monitor Resolution set to: " + SETTINGS["RESOLUTION"])
-        print("External Monitor is to the " + SETTINGS["SIDE"] + " of the thinkpad display")
+        print("External Monitor is to the " + SETTINGS["SIDE"] + 
+                                                    " of the thinkpad display")
     
     def about_popup(self, widget):
         self.about()
 
 
     def about(self):
-        label = gtk.Label("Developed by Sagar Karandikar \n http://sagark.org \n http://github.com/sagark/thinkdisp")
+        label = gtk.Label("Developed by Sagar Karandikar "
+                   "\n http://sagark.org \n http://github.com/sagark/thinkdisp")
         dialog = gtk.Dialog("About ThinkDisp:",
                     None,
                     gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -189,7 +201,9 @@ class ThinkDisp:
     def start_disp(self, widget):
         subprocess.Popen(["optirun", "true"])
         time.sleep(1)
-        subprocess.Popen(["xrandr", "--output", "LVDS1", "--auto", "--output", "VIRTUAL", "--mode", str(SETTINGS["RESOLUTION"]), "--"+str(SETTINGS["SIDE"])+"-of", "LVDS1"])
+        subprocess.Popen(["xrandr", "--output", "LVDS1", "--auto", "--output", 
+                            "VIRTUAL", "--mode", str(SETTINGS["RESOLUTION"]), 
+                                    "--"+str(SETTINGS["SIDE"])+"-of", "LVDS1"])
 		#YOU MUST HAVE screenclone in /usr/bin/
         time.sleep(1)
         subprocess.Popen(["screenclone", "-d", ":8", "-x", "1"])
@@ -243,9 +257,12 @@ if __name__ == "__main__":
 	#ensures that bbswitch dkms module is inserted and usable
     time.sleep(5) #prevents the weird gksudo lockup
     print("the thinkdisp icon should now be in your top panel")
-    print("there are currently some bugs - for example if thinkdisp crashes \n so does the xserver running the second monitor")
     #subprocess.call(["gksudo", "modprobe", "bbswitch"])
     subprocess.call(["gksudo", "start_thinkdisp"])
     #thread.start_new_thread(switch_batt, ())
+    u = UserConfig()
+    new_res = u.initialize_customs()
+    for res in new_res:
+        AVAIL_RES.append(res)
     indicator = ThinkDisp()
     indicator.main()
