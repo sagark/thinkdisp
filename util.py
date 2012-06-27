@@ -13,6 +13,9 @@ class UserConfig(object):
         #print(side)
         #print(custom_res)
 
+    def get_settings(self):
+        return [self.res, self.side]
+
     def initialize_customs(self):
         initialized = []
         for respair in self.custom_res:
@@ -24,7 +27,11 @@ class UserConfig(object):
             initialized.append('"' + respair[1] + '_59.90"')
         return initialized
                 
-
+    def write_res(self):
+        pass
+    
+    def write_side(self):
+        pass
 
 if __name__ == '__main__':
     a = UserConfig()

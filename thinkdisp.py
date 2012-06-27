@@ -10,20 +10,16 @@ import time
 import thread
 import os
 
-#available resolutions, set to standard xrandr resolutions by default
-AVAIL_RES = ["1920x1200", "1920x1080", "1600x1200", "1680x1050", "1400x1050", 
-          "1440x900", "1280x960", "1360x768", "1152x864", "800x600", "640x480"]
-
-#SETTINGS are loaded at runtime from prefs.ini, currently: RESOLUTION and SIDE
-#RESOLUTION: currently set resolution for the external monitor
-#SIDE: the side on which your external monitor is, relative to the thinkpad
-SETTINGS = { }
-
 """Future Features:
 switching out the xorg.conf.nvidia so that optirun can actually be used properly
 """
 
 class ThinkDisp:
+    AVAIL_RES = ["1920x1200", "1920x1080", "1600x1200", "1680x1050", "1400x1050", 
+          "1440x900", "1280x960", "1360x768", "1152x864", "800x600", "640x480"]
+
+    SETTINGS = { }
+
     def __init__(self):
         self.ind = appindicator.Indicator("think-disp-indicator",
                                            "indicator-think",
@@ -32,6 +28,17 @@ class ThinkDisp:
         self.ind.set_icon("gsd-xrandr") 
         #^this is located in /usr/share/icons/ubuntu-mono-light/apps/24/
 
+        #load user configuration
+        u = UserConfig()
+        self.SETTINGS["RESOLUTION"], self.SETTINGS["SIDE"] = u.get_settings()
+
+        # insert custom resolutions into xrandr and thinkdisp
+        new_res = u.initialize_customs()
+        for res in new_res:
+            self.AVAIL_RES.append(res)
+
+
+        # menu setup
         self.menu_setup()
         self.ind.set_menu(self.menu)
 
@@ -79,7 +86,6 @@ class ThinkDisp:
         self.menu.append(self.quit_item)
 
     def main(self):
-        self.load_defaults() #import settings from prefs.ini
         gtk.main()
 
     def quit(self, widget):
@@ -126,7 +132,6 @@ class ThinkDisp:
         dialog.destroy()
 
     def prefs_popup(self):
-        global SETTINGS
         label = gtk.Label("Set Preferences:                                   "
                                                         "                     ")
         dialog = gtk.Dialog("Display Preferences",
@@ -142,10 +147,10 @@ class ThinkDisp:
 
         #RESOLUTION combobox
         combo = gtk.combo_box_new_text()
-        for res in AVAIL_RES:
+        for res in self.AVAIL_RES:
             combo.append_text(res)
         try:
-            combo.set_active(AVAIL_RES.index(SETTINGS["RESOLUTION"]))
+            combo.set_active(self.AVAIL_RES.index(self.SETTINGS["RESOLUTION"]))
         except: # in case of value_error
             combo.set_active(0)
         dialog.vbox.pack_start(combo)
@@ -160,7 +165,7 @@ class ThinkDisp:
         sidecombo = gtk.combo_box_new_text()
         sidecombo.append_text("left")
         sidecombo.append_text("right")
-        if SETTINGS["SIDE"]=="left":
+        if self.SETTINGS["SIDE"]=="left":
             sidecombo.set_active(0)
         else:
             sidecombo.set_active(1)
@@ -171,13 +176,13 @@ class ThinkDisp:
         response = dialog.run()
         comboresp = combo.get_active_text()
         sidecomboresp = sidecombo.get_active_text()
-        SETTINGS["RESOLUTION"] = comboresp
-        SETTINGS["SIDE"] = sidecomboresp
+        self.SETTINGS["RESOLUTION"] = comboresp
+        self.SETTINGS["SIDE"] = sidecomboresp
         dialog.destroy()
 
         #terminal output
-        print("External Monitor Resolution set to: " + SETTINGS["RESOLUTION"])
-        print("External Monitor is to the " + SETTINGS["SIDE"] + 
+        print("External Monitor Resolution set to: " + self.SETTINGS["RESOLUTION"])
+        print("External Monitor is to the " + self.SETTINGS["SIDE"] + 
                                                     " of the thinkpad display")
     
     def about_popup(self, widget):
@@ -202,8 +207,8 @@ class ThinkDisp:
         subprocess.Popen(["optirun", "true"])
         time.sleep(1)
         subprocess.Popen(["xrandr", "--output", "LVDS1", "--auto", "--output", 
-                            "VIRTUAL", "--mode", str(SETTINGS["RESOLUTION"]), 
-                                    "--"+str(SETTINGS["SIDE"])+"-of", "LVDS1"])
+                            "VIRTUAL", "--mode", str(self.SETTINGS["RESOLUTION"]), 
+                                    "--"+str(self.SETTINGS["SIDE"])+"-of", "LVDS1"])
 		#YOU MUST HAVE screenclone in /usr/bin/
         time.sleep(1)
         subprocess.Popen(["screenclone", "-d", ":8", "-x", "1"])
@@ -214,16 +219,6 @@ class ThinkDisp:
         self.status_check(0)
         #time.sleep(3)
         #subprocess.call(["gksudo", "killdisp2"])
-
-    def load_defaults(self):
-        global SETTINGS
-        beg_path = os.path.expanduser("~")
-        prefs_file = file(beg_path + "/Documents/thinkdisp/prefs.ini")
-        prefs_file.readline()
-        defaults = eval(prefs_file.readline())
-        SETTINGS = defaults
-
-#    def save_defaults(self):
 
 
 def switch_batt():
@@ -254,15 +249,14 @@ def switch_batt():
 
 
 if __name__ == "__main__":
-	#ensures that bbswitch dkms module is inserted and usable
-    time.sleep(5) #prevents the weird gksudo lockup
-    print("the thinkdisp icon should now be in your top panel")
-    #subprocess.call(["gksudo", "modprobe", "bbswitch"])
+    
+    time.sleep(5) #prevents the weird gksudo lockup on boot
+
+   	#ensures that bbswitch dkms module is inserted and usable
     subprocess.call(["gksudo", "start_thinkdisp"])
-    #thread.start_new_thread(switch_batt, ())
-    u = UserConfig()
-    new_res = u.initialize_customs()
-    for res in new_res:
-        AVAIL_RES.append(res)
+
+    # load user settings and custom resolutions
+
+    # start indicator
     indicator = ThinkDisp()
     indicator.main()
