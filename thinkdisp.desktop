@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Application
-Exec=thinkdisp.py
+Exec=thinkdisp
 Name=thinkdisp
 Comment=manage_displays

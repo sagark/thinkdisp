@@ -5,7 +5,7 @@ class UserConfig(object):
     """A Module to load user configs and act on them"""
     def __init__(self):
         config = ConfigParser.RawConfigParser()
-        config.read('config.ini')
+        config.read('/etc/thinkdisp/config.ini')
         self.res = config.get("User Defaults", 'resolution')
         self.side = config.get("User Defaults", 'side')
         self.custom_res = config.items("Custom Resolutions")

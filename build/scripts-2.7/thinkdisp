@@ -1,6 +1,6 @@
-#!/usr/bin/env python
-import custom_res
-from util import UserConfig
+#!/usr/bin/python
+from thinkdisputil import custom_res
+from thinkdisputil.util import UserConfig
 import sys
 import gtk
 import appindicator
@@ -253,7 +253,7 @@ if __name__ == "__main__":
     time.sleep(5) #prevents the weird gksudo lockup on boot
 
    	#ensures that bbswitch dkms module is inserted and usable
-    subprocess.call(["gksudo", "start_thinkdisp"])
+    subprocess.call(["gksudo", "startthinkdisp"])
 
     # load user settings and custom resolutions
 
