@@ -10,7 +10,7 @@ setup(name='Thinkdisp',
       packages=['thinkdisputil'],
       scripts=['thinkdisp'],
       data_files=[('/etc/thinkdisp', ['config/config.ini']),
-                  ('~/.config/autostart', ['thinkdisp.desktop']),
+                  ('/etc/xdg/autostart', ['thinkdisp.desktop']),
                   ('/usr/bin', ['scripts/killdisp1', 'scripts/killdisp2']),
                   ('/usr/bin', ['scripts/startthinkdisp'])
                  ]
