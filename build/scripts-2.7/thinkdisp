@@ -50,12 +50,12 @@ class ThinkDisp:
         self.status_item.show()
         self.menu.append(self.status_item)
 
-        self.dispon_item = gtk.MenuItem("Turn Disp On")
+        self.dispon_item = gtk.MenuItem("Turn Display On")
         self.dispon_item.connect("activate", self.start_disp)
         self.dispon_item.show()
         self.menu.append(self.dispon_item)
 
-        self.dispoff_item = gtk.MenuItem("Turn Disp Off")
+        self.dispoff_item = gtk.MenuItem("Turn Display Off")
         self.dispoff_item.connect("activate", self.kill_disp)
         self.dispoff_item.show()
         self.menu.append(self.dispoff_item)
@@ -75,12 +75,12 @@ class ThinkDisp:
         self.prefs_item.show()
         self.menu.append(self.prefs_item)
 
-        self.about_item = gtk.MenuItem("About ThinkDisp")
+        self.about_item = gtk.MenuItem("About")
         self.about_item.connect("activate", self.about_popup)
         self.about_item.show()
         self.menu.append(self.about_item)
         
-        self.quit_item = gtk.MenuItem("Quit Indicator")
+        self.quit_item = gtk.MenuItem("Quit")
         self.quit_item.connect("activate", self.quit)
         self.quit_item.show()
         self.menu.append(self.quit_item)
@@ -95,12 +95,10 @@ class ThinkDisp:
         a = subprocess.check_output(["cat", "/proc/acpi/bbswitch"])
         if "ON" in a:
             print("card is on")
-            #self.popup_test("The Card is On", "Card Status")
             subprocess.call(["notify-send", 'thinkdisp', 
                                                       'The Nvidia card is on'])
         elif "OFF" in a:
             print("card is off")
-            #self.popup_test("The Card is Off", "Card Status")
             subprocess.call(["notify-send", 'thinkdisp', 
                                                      'The Nvidia card is off'])
 
@@ -132,14 +130,10 @@ class ThinkDisp:
         dialog.destroy()
 
     def prefs_popup(self):
-        label = gtk.Label("Set Preferences:                                   "
-                                                        "                     ")
         dialog = gtk.Dialog("Display Preferences",
                     None,
                     gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                     (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-        dialog.vbox.pack_start(label)
-        label.show()
 
         label2 = gtk.Label("External Monitor Resolution")
         dialog.vbox.pack_start(label2)
@@ -217,8 +211,6 @@ class ThinkDisp:
     def kill_disp(self, widget):
         subprocess.call(["gksudo", "killdisp1"])
         self.status_check(0)
-        #time.sleep(3)
-        #subprocess.call(["gksudo", "killdisp2"])
 
 
 def switch_batt():
@@ -249,13 +241,11 @@ def switch_batt():
 
 
 if __name__ == "__main__":
-    
-    time.sleep(5) #prevents the weird gksudo lockup on boot
+    # prevents the weird gksudo lockup on boot
+    time.sleep(5)
 
    	#ensures that bbswitch dkms module is inserted and usable
     subprocess.call(["gksudo", "startthinkdisp"])
-
-    # load user settings and custom resolutions
 
     # start indicator
     indicator = ThinkDisp()
