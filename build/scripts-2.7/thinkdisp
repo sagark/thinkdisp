@@ -133,7 +133,8 @@ class ThinkDisp:
         dialog = gtk.Dialog("Display Preferences",
                     None,
                     gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+                    (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, 
+                        gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
         label2 = gtk.Label("External Monitor Resolution")
         dialog.vbox.pack_start(label2)
@@ -168,10 +169,15 @@ class ThinkDisp:
 
         #run the dialog, get user input
         response = dialog.run()
-        comboresp = combo.get_active_text()
-        sidecomboresp = sidecombo.get_active_text()
-        self.SETTINGS["RESOLUTION"] = comboresp
-        self.SETTINGS["SIDE"] = sidecomboresp
+        print(response)
+        if response == gtk.RESPONSE_ACCEPT:
+            print("changing settings")
+            comboresp = combo.get_active_text()
+            sidecomboresp = sidecombo.get_active_text()
+            self.SETTINGS["RESOLUTION"] = comboresp
+            self.SETTINGS["SIDE"] = sidecomboresp
+        elif response == gtk.RESPONSE_REJECT:
+            print("discarding changes")
         dialog.destroy()
 
         #terminal output
