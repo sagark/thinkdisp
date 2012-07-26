@@ -30,7 +30,7 @@ class ThinkDisp:
 
         #load user configuration
         self.u = UserConfig()
-        self.SETTINGS["RESOLUTION"], self.SETTINGS["SIDE"] = self.u.get_settings()
+        self.SETTINGS["RESOLUTION"], self.SETTINGS["SIDE"], self.SETTINGS["ROTATION"] = self.u.get_settings()
 
         # insert custom resolutions into xrandr and thinkdisp
         new_res = self.u.initialize_customs()
@@ -163,8 +163,28 @@ class ThinkDisp:
             sidecombo.set_active(0)
         else:
             sidecombo.set_active(1)
+
         dialog.vbox.pack_start(sidecombo)
         sidecombo.show()
+
+        label4 = gtk.Label("External Screen Rotation:")
+        dialog.vbox.pack_start(label4)
+        label4.show()
+
+        rotcombo = gtk.combo_box_new_text()
+        rotcombo.append_text("normal")
+        rotcombo.append_text("left")
+        rotcombo.append_text("right")
+        if self.SETTINGS["ROTATION"]=="normal":
+            rotcombo.set_active(0)
+        elif self.SETTINGS["ROTATION"]=="left":
+            rotcombo.set_active(1)
+        else:
+            rotcombo.set_active(2)
+
+        dialog.vbox.pack_start(rotcombo)
+        rotcombo.show()
+        
 
         #run the dialog, get user input
         response = dialog.run()
@@ -172,8 +192,10 @@ class ThinkDisp:
             print("changing settings")
             comboresp = combo.get_active_text()
             sidecomboresp = sidecombo.get_active_text()
+            rotcomboresp = rotcombo.get_active_text()
             self.SETTINGS["RESOLUTION"] = comboresp
             self.SETTINGS["SIDE"] = sidecomboresp
+            self.SETTINGS["ROTATION"] = rotcomboresp
             self.u.write_settings(self.SETTINGS)
         elif response == gtk.RESPONSE_REJECT:
             print("discarding changes")
@@ -207,7 +229,8 @@ class ThinkDisp:
         subprocess.Popen(["optirun", "true"])
         time.sleep(1)
         subprocess.Popen(["xrandr", "--output", "LVDS1", "--auto", "--output", 
-                         "VIRTUAL", "--mode", str(self.SETTINGS["RESOLUTION"]), 
+                         "VIRTUAL", "--mode", str(self.SETTINGS["RESOLUTION"]),
+                         "--rotate", str(self.SETTINGS["ROTATION"]), 
                                "--"+str(self.SETTINGS["SIDE"])+"-of", "LVDS1"])
 		#YOU MUST HAVE screenclone in /usr/bin/
         time.sleep(1)
