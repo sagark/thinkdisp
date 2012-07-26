@@ -4,11 +4,11 @@ from custom_res import CustomResolution
 class UserConfig(object):
     """A Module to load user configs and act on them"""
     def __init__(self):
-        config = ConfigParser.RawConfigParser()
-        config.read('/etc/thinkdisp/config.ini')
-        self.res = config.get("User Defaults", 'resolution')
-        self.side = config.get("User Defaults", 'side')
-        self.custom_res = config.items("Custom Resolutions")
+        self.config = ConfigParser.RawConfigParser()
+        self.config.read('/etc/thinkdisp/config.ini')
+        self.res = self.config.get("User Defaults", 'resolution')
+        self.side = self.config.get("User Defaults", 'side')
+        self.custom_res = self.config.items("Custom Resolutions")
         #print(res)
         #print(side)
         #print(custom_res)
@@ -27,11 +27,13 @@ class UserConfig(object):
             initialized.append('"' + respair[1] + '_59.90"')
         return initialized
                 
-    def write_res(self):
-        pass
+    def write_settings(self, settingsdict):
+        #take in thinkdisp's settings dict and write it all to file
+        self.config.set('User Defaults', 'resolution', settingsdict["RESOLUTION"])
+        self.config.set('User Defaults', 'side', settingsdict["SIDE"])
+        setfile = file('/etc/thinkdisp/config.ini', 'w')
+        self.config.write(setfile)
     
-    def write_side(self):
-        pass
 
 if __name__ == '__main__':
     a = UserConfig()

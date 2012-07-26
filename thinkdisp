@@ -29,11 +29,11 @@ class ThinkDisp:
         #^this is located in /usr/share/icons/ubuntu-mono-light/apps/24/
 
         #load user configuration
-        u = UserConfig()
-        self.SETTINGS["RESOLUTION"], self.SETTINGS["SIDE"] = u.get_settings()
+        self.u = UserConfig()
+        self.SETTINGS["RESOLUTION"], self.SETTINGS["SIDE"] = self.u.get_settings()
 
         # insert custom resolutions into xrandr and thinkdisp
-        new_res = u.initialize_customs()
+        new_res = self.u.initialize_customs()
         for res in new_res:
             self.AVAIL_RES.append(res)
 
@@ -174,6 +174,7 @@ class ThinkDisp:
             sidecomboresp = sidecombo.get_active_text()
             self.SETTINGS["RESOLUTION"] = comboresp
             self.SETTINGS["SIDE"] = sidecomboresp
+            self.u.write_settings(self.SETTINGS)
         elif response == gtk.RESPONSE_REJECT:
             print("discarding changes")
         dialog.destroy()

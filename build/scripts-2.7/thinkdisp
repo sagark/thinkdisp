@@ -37,7 +37,6 @@ class ThinkDisp:
         for res in new_res:
             self.AVAIL_RES.append(res)
 
-
         # menu setup
         self.menu_setup()
         self.ind.set_menu(self.menu)
@@ -169,7 +168,6 @@ class ThinkDisp:
 
         #run the dialog, get user input
         response = dialog.run()
-        print(response)
         if response == gtk.RESPONSE_ACCEPT:
             print("changing settings")
             comboresp = combo.get_active_text()
@@ -181,7 +179,8 @@ class ThinkDisp:
         dialog.destroy()
 
         #terminal output
-        print("External Monitor Resolution set to: " + self.SETTINGS["RESOLUTION"])
+        print("External Monitor Resolution set to: " + 
+                                                    self.SETTINGS["RESOLUTION"])
         print("External Monitor is to the " + self.SETTINGS["SIDE"] + 
                                                     " of the thinkpad display")
     
@@ -207,8 +206,8 @@ class ThinkDisp:
         subprocess.Popen(["optirun", "true"])
         time.sleep(1)
         subprocess.Popen(["xrandr", "--output", "LVDS1", "--auto", "--output", 
-                            "VIRTUAL", "--mode", str(self.SETTINGS["RESOLUTION"]), 
-                                    "--"+str(self.SETTINGS["SIDE"])+"-of", "LVDS1"])
+                         "VIRTUAL", "--mode", str(self.SETTINGS["RESOLUTION"]), 
+                               "--"+str(self.SETTINGS["SIDE"])+"-of", "LVDS1"])
 		#YOU MUST HAVE screenclone in /usr/bin/
         time.sleep(1)
         subprocess.Popen(["screenclone", "-d", ":8", "-x", "1"])

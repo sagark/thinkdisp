@@ -3,3 +3,6 @@
 sudo modprobe bbswitch
 #kills display on startup
 sudo killdisp1
+#fix config file permissions
+sudo chown $SUDO_USER /etc/thinkdisp/config.ini
+#sudo echo $SUDO_USER
