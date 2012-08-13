@@ -2,7 +2,7 @@
 from distutils.core import setup
 
 setup(name='Thinkdisp',
-      version='1.1',
+      version='1.2',
       description='Display Manager for Thinkpads with Optimus',
       author='Sagar Karandikar',
       author_email='apps@sagark.org',
@@ -11,7 +11,7 @@ setup(name='Thinkdisp',
       scripts=['thinkdisp'],
       data_files=[('/etc/thinkdisp', ['config/config.ini']),
                   ('/etc/xdg/autostart', ['thinkdisp.desktop']),
-                  ('/usr/bin', ['scripts/killdisp1', 'scripts/killdisp2']),
-                  ('/usr/bin', ['scripts/startthinkdisp'])
+                  ('/usr/bin', ['scripts/killdisp']),
+                  ('/usr/bin', ['scripts/thinkdisp-fix-permissions'])
                  ]
      )

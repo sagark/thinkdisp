@@ -10,6 +10,7 @@ class UserConfig(object):
         self.side = self.config.get("User Defaults", 'side')
         self.rotation = self.config.get("User Defaults", 'rotation')
         self.custom_res = self.config.items("Custom Resolutions")
+        self.perm_fixed = self.config.get("First Run", 'perm_fixed')
         #print(res)
         #print(side)
         #print(custom_res)
@@ -36,7 +37,11 @@ class UserConfig(object):
         self.config.set('User Defaults', 'rotation', settingsdict["ROTATION"])
         setfile = file('/etc/thinkdisp/config.ini', 'w')
         self.config.write(setfile)
-    
+   
+    def done_first_run(self):
+        self.config.set("First Run", "perm_fixed", "True")
+        setfile = file('/etc/thinkdisp/config.ini', 'w')
+        self.config.write(setfile)
 
 if __name__ == '__main__':
     a = UserConfig()

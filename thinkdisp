@@ -238,7 +238,7 @@ class ThinkDisp:
         self.status_check(0)
 
     def kill_disp(self, widget):
-        subprocess.call(["gksudo", "killdisp1"])
+        subprocess.call(["killdisp"])
         self.status_check(0)
 
 
@@ -273,8 +273,16 @@ if __name__ == "__main__":
     # prevents the weird gksudo lockup on boot
     time.sleep(5)
 
+    ###ADD CODE HERE TO FIX PERMISSIONS ON FIRST RUN
+    tmpUconf = UserConfig()
+    if tmpUconf.perm_fixed not in "True":
+        print("Since this appears to be the first run, set permissions to prevent"
+                " having to ask for sudo pass every time")
+        subprocess.call(["gksudo", "thinkdisp-fix-permissions"])
+        tmpUconf.done_first_run()
+
    	#ensures that bbswitch dkms module is inserted and usable
-    subprocess.call(["gksudo", "startthinkdisp"])
+    subprocess.call(["killdisp"])
 
     # start indicator
     indicator = ThinkDisp()

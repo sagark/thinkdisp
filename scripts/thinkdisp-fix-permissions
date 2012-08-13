@@ -1,0 +1,9 @@
+#!/bin/bash
+
+sudo chown root /usr/bin/killdisp #make owner root
+sudo chmod ug+s /usr/bin/killdisp #SetUID and setGID
+sudo chmod o+x /usr/bin/killdisp #make executable by "other" group
+
+
+#set permissions for config file
+sudo chown $SUDO_USER /etc/thinkdisp/config.ini
