@@ -2,7 +2,7 @@
 from distutils.core import setup
 
 setup(name='Thinkdisp',
-      version='1.2',
+      version='1.3',
       description='Display Manager for Thinkpads with Optimus',
       author='Sagar Karandikar',
       author_email='apps@sagark.org',
