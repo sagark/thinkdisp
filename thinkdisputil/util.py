@@ -10,7 +10,10 @@ class UserConfig(object):
         self.side = self.config.get("User Defaults", 'side')
         self.rotation = self.config.get("User Defaults", 'rotation')
         self.custom_res = self.config.items("Custom Resolutions")
-        self.perm_fixed = self.config.get("First Run", 'perm_fixed')
+        try: #take care of upgrade case where perm_fixed doesn't exist
+            self.perm_fixed = self.config.get("First Run", 'perm_fixed')
+        except:
+            self.perm_fixed = "False"
         #print(res)
         #print(side)
         #print(custom_res)
@@ -39,6 +42,10 @@ class UserConfig(object):
         self.config.write(setfile)
    
     def done_first_run(self):
+        try: # try to add section, catch the exception if it already exists
+            self.config.add_section("First Run")
+        except:
+            pass
         self.config.set("First Run", "perm_fixed", "True")
         setfile = file('/etc/thinkdisp/config.ini', 'w')
         self.config.write(setfile)
